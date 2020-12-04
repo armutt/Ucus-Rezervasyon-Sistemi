@@ -16,7 +16,7 @@ public class Menu {
                         System.out.println("Kayıtlı uçuş yok");
                     }
                     else {
-                        System.out.println("  Tarih   \tHavayolu \tDestinasyon\tucus tipi\tkoltuk no\tAgirlik");
+                        System.out.println("  Tarih   \tHavayolu \t   Kalkış  \t   Varış  \tucus tipi\tkoltuk no\tAgirlik");
                         Flight.flights.sort((o1, o2) -> o1.date.compareTo(o2.date));
                         Flight.flights.forEach(flight -> System.out.println(flight));
                     }

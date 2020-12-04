@@ -12,6 +12,7 @@ public class Flight {
     Havayolu havayolu;
     FlightType type;
     destination kalkis;
+    destination varis;
     String koltukNo;
     Integer agirlik;
 
@@ -25,16 +26,20 @@ public class Flight {
             System.out.println(value);
         }
         temp.setHavayolu();
-        System.out.println("Lütfen Destinasyonunuzun kodunu yada adını girin");
+        System.out.println("Lütfen kalkış Destinasyonunuzun kodunu yada adını girin");
         for (destination value : destination.values()) {
             System.out.println(value);
         }
         temp.setKalkis();
+        System.out.println("Lütfen varış Destinasyonunuzun kodunu yada adını girin");
+        temp.setVaris();
         System.out.println("Lütfen uçuş tipi seçiniz");
         temp.setType();
         flights.add(temp);
         return temp;
     }
+
+
 
     void setDate() {
         Date date = null;
@@ -76,6 +81,16 @@ public class Flight {
         } catch (ParseException e) {
             System.out.println("Girdiginiz bilgilerle eslesen bir havalimani bulunamadi \nyeniden deneyin");
             setKalkis();
+        }
+    }
+    void setVaris() {
+        Scanner scanner = new Scanner(System.in);
+        var s = scanner.nextLine();
+        try {
+            varis =destination.Parse(s);
+        } catch (ParseException e) {
+            System.out.println("Girdiginiz bilgilerle eslesen bir havalimani bulunamadi \nyeniden deneyin");
+            setVaris();
         }
 
     }
@@ -138,6 +153,7 @@ public class Flight {
         s+=DATEFORMAT.format(date);
         s+="\t  "+havayolu.code+"    ";
         s+="\t    "+kalkis.code+"    ";
+        s+="\t    "+ varis.code+"    ";
         s+="\t "+type+"   ";
         s+="\t  "+(koltukNo==null?"---":koltukNo)+"    ";
         s+="\t  "+(agirlik==null?"---":agirlik)+"  ";
