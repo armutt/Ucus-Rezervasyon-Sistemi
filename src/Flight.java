@@ -1,24 +1,41 @@
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
-public class Flight {
-    public static ArrayList<Flight> flights = new ArrayList<>();
-    Date date;
+public class Flight implements Comparable<Flight>{
+    private static ArrayList<Flight> flights = new ArrayList<>();
+    final Date date;
     static final SimpleDateFormat DATEFORMAT=new SimpleDateFormat("dd.MM.yyyy");
     Havayolu havayolu;
-    FlightType type;
-    destination kalkis;
-    destination varis;
-    String koltukNo;
-    Integer agirlik;
+    Destination departure;
+    Destination arrival;
 
-    //koltuk no yada tasinan agirlik
+    public Date getDate() {
+        return date;
+    }
+    public Havayolu getHavayolu() {
+        return havayolu;
+    }
+    public Destination getDeparture() {
+        return departure;
+    }
+    public Destination getArrival() {
+        return arrival;
+    }
+    public static Flight[] getFlights(){
+        return flights.toArray(new Flight[0]);
+    }
+    protected Flight(Date date, Havayolu havayolu, Destination kalkis, Destination varis) {
+        this.date = date;
+        this.havayolu = havayolu;
+        this.departure = kalkis;
+        this.arrival = varis;
+        flights.add(this);
+    }
+
+
+   /*
     static Flight Create() {
-        var temp = new Flight();
+        var temp = new Flight(date, havayolu, kalkis, varis);
         System.out.println("Lütfen uçuş icin tarih girin");
         temp.setDate();
         System.out.println("Lütfen havayolunun  kodunu yada adini girin");
@@ -27,7 +44,7 @@ public class Flight {
         }
         temp.setHavayolu();
         System.out.println("Lütfen kalkış Destinasyonunuzun kodunu yada adını girin");
-        for (destination value : destination.values()) {
+        for (Destination value : Destination.values()) {
             System.out.println(value);
         }
         temp.setKalkis();
@@ -38,178 +55,23 @@ public class Flight {
         flights.add(temp);
         return temp;
     }
+    */
 
 
-
-    void setDate() {
-        Date date = null;
-        Scanner scanner = new Scanner(System.in);
-        var s = scanner.nextLine();
-
-        try {
-            DATEFORMAT.setLenient(false);
-            date = DATEFORMAT.parse(s);
-
-        } catch (ParseException e) {
-            System.err.println("hatalı format.Lütfen tarihi DD.MM.YYYY şeklinde giriniz");
-            setDate();
-        }
-        for(var flight :flights)
-            if(date.equals(flight.date))
-            {
-                System.out.println("bu tarihte farklı bir uçuş var.\nLütfen yeni bir tarih seçin");
-                setDate();
-            }
-        this.date=date;
-
-    }
-    void setHavayolu() {
-        Scanner scanner = new Scanner(System.in);
-        var s = scanner.nextLine();
-        try {
-            havayolu=Havayolu.Parse(s);
-        } catch (ParseException e) {
-            System.out.println("Girdiğiniz bilgilerle eşleşen bir havayolu bulunamadi \nyeniden deneyin");
-            setHavayolu();
-        }
-    }
-    void setKalkis(){
-        Scanner scanner = new Scanner(System.in);
-        var s = scanner.nextLine();
-        try {
-            kalkis=destination.Parse(s);
-        } catch (ParseException e) {
-            System.out.println("Girdiginiz bilgilerle eslesen bir havalimani bulunamadi \nyeniden deneyin");
-            setKalkis();
-        }
-    }
-    void setVaris() {
-        Scanner scanner = new Scanner(System.in);
-        var s = scanner.nextLine();
-        try {
-            varis =destination.Parse(s);
-        } catch (ParseException e) {
-            System.out.println("Girdiginiz bilgilerle eslesen bir havalimani bulunamadi \nyeniden deneyin");
-            setVaris();
-        }
-
-    }
-    void setType(){
-        System.out.println("Yolcu tipi uçuş icin yolcu yada Y yazın");
-        System.out.println("Kargo tipi uçuş icin kargo yada K yazın");
-        Scanner scanner = new Scanner(System.in);
-        var s=scanner.nextLine();
-        if(s.equalsIgnoreCase("yolcu")||s.equalsIgnoreCase("y")) {
-            type = FlightType.Yolcu;
-            System.out.println("Lütfen Koltuk no girin");
-            setKoltukNo();
-        }
-        else if(s.equalsIgnoreCase("kargo")||s.equalsIgnoreCase("k")) {
-            type = FlightType.Kargo;
-            System.out.println("Lütfen Kargonun ağırlığını Kg şeklinde girin");
-            setAgirlik();
-        }
-        else
-        {
-            System.out.println("tekrar deneyin");
-            setType();
-        }
-    }
-    private void setKoltukNo() {
-        Scanner scanner = new Scanner(System.in);
-        var s = scanner.nextLine();
-        if(s.matches("^\\d{2}[A-Fa-f]")) {
-            koltukNo = s.toUpperCase();
-        }
-        else {
-            System.out.println("Hatalı giriş yeniden deneyin");
-            setKoltukNo();
-        }
-    }
-    private void setAgirlik() {
-        Scanner scanner = new Scanner(System.in);
-        try {
-            int a = scanner.nextInt();
-            if(a>100&&a<5000)
-            {
-                agirlik=a;
-            }
-            else {
-                System.out.println("Kargonuz havayolu tarafından belirlenen ağırlık aralığının dışında");
-                setAgirlik();
-            }
-        }
-        catch (InputMismatchException e)
-        {
-            System.out.println("Lütfen sayi olarak girin");
-            setAgirlik();
-        }
-
-    }
 
     @Override
     public String toString() {
-        String s="";
-        s+=DATEFORMAT.format(date);
-        s+="\t  "+havayolu.code+"    ";
-        s+="\t    "+kalkis.code+"    ";
-        s+="\t    "+ varis.code+"    ";
-        s+="\t "+type+"   ";
-        s+="\t  "+(koltukNo==null?"---":koltukNo)+"    ";
-        s+="\t  "+(agirlik==null?"---":agirlik)+"  ";
-        return s;
-    }
-}
-enum Havayolu {
-    klm("KLM", "klm airlines"),
-    lh("LH", "Lufthansa Airlines"),
-    thy("THY", "turkish airlines");
-    public final String code;
-    public final String name;
-
-    Havayolu(String code, String name) {
-        this.code = code;
-        this.name = name;
-    }
-
-    static Havayolu Parse(String s) throws ParseException {
-        for (var value : Havayolu.values()) {
-            if (s.toUpperCase().equals(value.code) || s.toLowerCase().equals(value.name))
-                return value;
-        }
-        throw new ParseException(s, 0);
+        var builder= new StringBuilder();
+        builder.append(DATEFORMAT.format(date));
+        builder.append("\t"+havayolu.code);
+        builder.append("\t"+ departure.code);
+        builder.append("\t"+ arrival.code);
+        return builder.toString();
     }
 
     @Override
-    public String toString() {
-        return code + "-" + name;
-    }
-}//
-enum destination {
-    isl("ISL", "istanbul"),
-    ams("AMS", "schiphol"),
-    fra("FRA", "frankfurt");
-    public final String code;
-    public final String name;
-
-    destination(String code, String name) {
-        this.code = code;
-        this.name = name;
-    }
-
-    static destination Parse(String s) throws ParseException {
-        for (var value : destination.values()) {
-            if (s.toUpperCase().equals(value.code) || s.toLowerCase().equals(value.name))
-                return value;
-        }
-        throw new ParseException(s,0);
-    }
-
-    @Override
-    public String toString() {
-        return code + "-" + name;
+    public int compareTo(Flight o) {
+        return date.compareTo(o.date);
     }
 }
-enum FlightType {
-    Yolcu,Kargo
-}
+
